@@ -41,6 +41,18 @@ app.get('/', (req, res) => {
         });
     });
 
+});
+
+app.post('/task/add', (req, res) => {
+    const { task } = req.body;
+
+    client.rpush('Tasks', task, (err, reply) => {
+        if(err){
+            console.log(err);
+        }
+        console.log("Task added")
+        res.redirect('/');
+    });
 
 })
 
