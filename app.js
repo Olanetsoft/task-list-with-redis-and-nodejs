@@ -47,14 +47,33 @@ app.post('/task/add', (req, res) => {
     const { task } = req.body;
 
     client.rpush('Tasks', task, (err, reply) => {
-        if(err){
+        if (err) {
             console.log(err);
         }
         console.log("Task added")
         res.redirect('/');
     });
+});
 
-})
+app.post('/task/delete', (req, res) => {
+    const taskToDelete  = req.body.tasks;
+
+    client.lrange('Tasks', 0, -1, (err, tasks) => {
+        for (var i = 0; i < tasks.length; i++) {
+            if (taskToDelete.indexOf(tasks[i]) > -1) {
+                client.lrem('Tasks', 0, tasks[i], () => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log("Task removed");
+                });
+            };
+        };
+        
+        res.redirect('/');
+    });
+});
+
 
 
 // Port config 
