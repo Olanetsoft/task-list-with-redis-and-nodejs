@@ -13,10 +13,14 @@ exports.getAllTask = (req, res) => {
     const title = 'Task List';
 
     client.lrange('Tasks', 0, -1, (err, reply) => {
-        res.render('index', {
-            title,
-            tasks: reply
-        });
+        client.hgetall('call', (err, call) => {
+            res.render('index', {
+                title,
+                tasks: reply,
+                call: call
+            });
+        })
+
     });
 
 };
@@ -50,4 +54,29 @@ exports.deleteTask = (req, res) => {
 
         res.redirect('/');
     });
+};
+
+exports.nextCall = (req, res) => {
+    const newCall = {};
+
+    newCall.name = req.body.name;
+    newCall.company = req.body.company;
+    newCall.phone = req.body.phone;
+    newCall.time = req.body.time;
+
+    client.hmset('call',
+        [
+            'name', newCall.name,
+            'company', newCall.company,
+            'phone', newCall.phone,
+            'time', newCall.time
+        ],
+        (err, reply) => {
+            if (err) {
+                console.log(err);
+            };
+            console.log(reply)
+            res.redirect('/');
+        }
+    );
 };

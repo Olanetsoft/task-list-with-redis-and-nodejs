@@ -10,4 +10,6 @@ router.post('/task/add', controller.addTask);
 
 router.post('/task/delete', controller.deleteTask);
 
+router.post('/call/add', controller.nextCall);
+
 module.exports = router;
